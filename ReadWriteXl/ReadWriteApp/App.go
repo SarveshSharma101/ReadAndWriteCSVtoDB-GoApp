@@ -13,13 +13,16 @@ import (
 	"strings"
 )
 
+const csvFolderPath = "../XlFiles"
+const destFolderPath = "../ReadFiles/"
+
 /**
 Reading csv files from '../XlFiles/' folder one by one, for each line of data converting it to a valid json req Body
 and making a post request to respective API
 */
 func main() {
 	//Read the folder content
-	csvFolderPath := "../XlFiles"
+
 	csvFolder, err := os.Open(csvFolderPath)
 	panicIfError(err)
 
@@ -37,7 +40,7 @@ func main() {
 		//Open the files one by one and read the all the lines
 		csvFileName := f.Name()
 		fmt.Println(i, "-->", csvFileName)
-		csvFile, err = os.Open("../XlFiles/" + csvFileName)
+		csvFile, err = os.Open(csvFolderPath + "/" + csvFileName)
 		panicIfError(err)
 
 		lines, err := csv.NewReader(csvFile).ReadAll()
@@ -55,7 +58,7 @@ func main() {
 		csvFile.Close()
 		//Check if all the post request were successful and move the file from XlFiles to ReadFiles folder
 		if success {
-			err = os.Rename("../XlFiles/"+csvFileName, "../ReadFiles/"+csvFileName)
+			err = os.Rename(csvFolderPath+"/"+csvFileName, destFolderPath+csvFileName)
 			panicIfError(err)
 		}
 		fmt.Println("---------------------------------------------------------------------------")
